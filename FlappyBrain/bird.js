@@ -22,7 +22,7 @@ function mutate(x) {
 //now just passes the scalar value to add
 function mutation() { //changed to mutation for clarity
   let mutationScalar = 0;
-  if (random(1) < 0.5) {
+  if (random(1) < 0.1) {
     let offset = randomGaussian() * 0.5;
     mutationScalar += offset;
     console.log(mutationScalar + 'offset');
@@ -98,25 +98,24 @@ class Bird {
       inputs[4] = map(this.velocity, -5, 5, 0, 1);
 
       // Get the outputs from the network (an array of 2)
-      // let action = this.brain.predict(inputs);
-      // let action;
-      let test = 0;
-      // async function decide(){
+      console.log('before await predict ' + tf.memory().numTensors);
       let action = await this.brain.predict(inputs);
-      //   test++;
-      // }
-      // let action = async () => {
-      //   test++;
-      //   console.log('this');
-      //   return this.brain.predict(inputs);
-      // }
-      // action();
-      // Decide to jump or not!
-      // console.log(tf.print(action));
-      // console.log(action[0]);
+      // tf.tidy(() => {
+
+      console.log('before action up ' + tf.memory().numTensors);
+
       if (action[1] > action[0]) { //WHAT, that's crazy
         this.up();
       }
+      console.log('before dispose ' + tf.memory().numTensors);
+      console.log('action' + action);
+      // tf.dispose(action);
+      console.log('after dispose ' + tf.memory().numTensors);
+
+      // });
+      console.log('after predict tidy ' + tf.memory().numTensors);
+
+
     }
   }
 

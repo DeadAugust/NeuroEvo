@@ -2,25 +2,28 @@
 class NeuralNetwork {
   constructor(in_nodes, hid_nodes, out_nodes, act_func, loss_func, optimizer_) {
     if (in_nodes instanceof NeuralNetwork) {
-      let oldBrain = in_nodes;
-      //need all this repetition?
-      this.input_nodes = oldBrain.input_nodes;
-      this.hidden_nodes = oldBrain.hidden_nodes;
-      this.output_nodes = oldBrain.output_nodes;
-      this.activation_function = oldBrain.activation_function;
-      this.loss_function = oldBrain.activation_function;
-      this.optimizer = oldBrain.optimizer;
-      //really just this, right?
-      this.model = oldBrain.model;
+      tf.tidy(() => { //need?
+        let oldBrain = in_nodes;
+        //need all this repetition?
+        this.input_nodes = oldBrain.input_nodes;
+        this.hidden_nodes = oldBrain.hidden_nodes;
+        this.output_nodes = oldBrain.output_nodes;
+        this.activation_function = oldBrain.activation_function;
+        this.loss_function = oldBrain.activation_function;
+        this.optimizer = oldBrain.optimizer;
+        //really just this, right?
+        this.model = oldBrain.model;
+      });
 
     } else { //new NN
-      this.input_nodes = in_nodes; //why the repetition? to copy
-      this.hidden_nodes = hid_nodes;
-      this.output_nodes = out_nodes;
-      this.activation_function = act_func;
-      this.loss_function = loss_func;
-      this.optimizer = optimizer_;
       tf.tidy(() => {
+        this.input_nodes = in_nodes; //why the repetition? to copy
+        this.hidden_nodes = hid_nodes;
+        this.output_nodes = out_nodes;
+        this.activation_function = act_func;
+        this.loss_function = loss_func;
+        this.optimizer = optimizer_;
+
         const model = tf.sequential();
         //adding hidden layer fed from input layer
         model.add(tf.layers.dense({
@@ -50,12 +53,18 @@ class NeuralNetwork {
 
   async predict(input_array) {
     const actionOutputs = tf.tidy(() => {
+      console.log('inside tidy ' + tf.memory().numTensors);
       const inputs = tf.tensor2d([input_array]);
       return this.model.predict(inputs); //await?
+      console.log('after return in tidy ' + tf.memory().numTensors);
+
     });
+    console.log('after tidy ' + tf.memory().numTensors);
+
     let actionArray = await actionOutputs.array();
-    tf.dispose(actionOutputs); //fixed memory leak
-    // console.log(actionArray[0]);
+    tf.dispose(actionOutputs);
+    console.log('after dispose after tidy ' + tf.memory().numTensors);
+
     return actionArray[0];
   }
 
@@ -64,15 +73,10 @@ class NeuralNetwork {
     return new NeuralNetwork(this);
   }
 
-  // Accept an arbitrary function for mutation (bird.js line 10)
-  //map is
+  //mutation (bird.js line 10)
   mutate(m) {
-    // this.weights_ih.map(func);
-    // // value = value + offset
-    // this.weights_ho.map(func);
-    // this.bias_h.map(func);
-    // this.bias_o.map(func);
     if (m != 0) {
+      console.log("mutating");
       //super big thanks to Shanqing Cai for help with weights and bias:
       //https://groups.google.com/a/tensorflow.org/forum/#!topic/tfjs/ORkUHg_k_fU
       tf.tidy(() => {
