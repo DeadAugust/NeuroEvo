@@ -22,7 +22,8 @@ function mutate(x) {
 //now just passes the scalar value to add
 function mutation() { //changed to mutation for clarity
   let mutationScalar = 0;
-  if (random(1) < 0.1) {
+  // if (random(1) < 0.1) {
+  if (random(1) < mutationSet) { //defined in settings
     let offset = randomGaussian() * 0.5;
     mutationScalar += offset;
     // console.log(mutationScalar + 'offset');
@@ -48,7 +49,7 @@ class Bird {
       this.brain = brain.copy();
       this.brain.mutate(mutation()); //why is it just "mutate" in the original??????
     } else {
-      this.brain = new NeuralNetwork(5, 8, 2, 'sigmoid', 'meanSquaredError', 'sgd'); //update later with other act_func options
+      this.brain = new NeuralNetwork(5, hiddenSet, 2, activationSet, 'meanSquaredError', 'sgd'); //update later with other act_func options
     }
 
     // Score is how many frames it's been alive

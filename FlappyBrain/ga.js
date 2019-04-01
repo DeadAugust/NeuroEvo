@@ -24,9 +24,6 @@ function nextGeneration() {
   resetGame();
   // Normalize the fitness values 0-1
   normalizeFitness(allBirds);
-  for (let i = 0; i < allBirds.length; i ++){
-    console.log("bird " + i + '\'s fitness: ' + allBirds[i].fitness);
-  }
   // Generate a new set of birds
   activeBirds = generate(allBirds);
   // Copy those birds to another array
