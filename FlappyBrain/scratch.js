@@ -41,7 +41,7 @@ class NeuralNetwork {
         //already randomized, so no need to call .randomize();
         //prepare the model
         model.compile({
-          loss: this.loss_function,
+          loss: this.loss_function, //don't need this or learning rate?
           optimizer: this.optimizer
         });
         //no need to fit, because that's what the GA is for
@@ -53,22 +53,18 @@ class NeuralNetwork {
 
   async predict(input_array) {
     const actionOutputs = tf.tidy(() => {
-      console.log('inside tidy ' + tf.memory().numTensors);
       const inputs = tf.tensor2d([input_array]);
       return this.model.predict(inputs); //await?
-      console.log('after return in tidy ' + tf.memory().numTensors);
 
     });
-    console.log('after tidy ' + tf.memory().numTensors);
 
     let actionArray = await actionOutputs.array();
     tf.dispose(actionOutputs);
-    console.log('after dispose after tidy ' + tf.memory().numTensors);
 
     return actionArray[0];
   }
 
-  // still need this? yes, for bird.js line 35
+  // still need this? yes, for bird.js line 35 (48)
   copy() {
     return new NeuralNetwork(this);
   }
@@ -76,7 +72,9 @@ class NeuralNetwork {
   //mutation (bird.js line 10)
   mutate(m) {
     if (m != 0) {
-      console.log("mutating");
+      // console.log("mutating");
+      // this.model.layers[0].getWeights()[0].print();
+
       //super big thanks to Shanqing Cai for help with weights and bias:
       //https://groups.google.com/a/tensorflow.org/forum/#!topic/tfjs/ORkUHg_k_fU
       tf.tidy(() => {
@@ -105,7 +103,7 @@ class NeuralNetwork {
         const output_mutationTensor = tf.tensor1d(output_array);
         const ho_w_mutated = ho_weights.add(output_mutationTensor);
         const o_b_mutated = o_bias.add(output_mutationTensor);
-
+        //
         // console.log('weights');
         // ih_weights.print();
         // ih_w_mutated.print();
@@ -117,66 +115,14 @@ class NeuralNetwork {
         this.model.layers[0].setWeights([ih_w_mutated, h_b_mutated]);
         this.model.layers[1].setWeights([ho_w_mutated, o_b_mutated]);
 
-
+        // console.log('done mutating');
+        // this.model.layers[0].getWeights()[0].print();
 
       });
     }
+    // else {
+    //   console.log('not mutating');
+    // }
 
-    // this.model.layers[0].getWeights()[0].print();
   }
 }
-
-
-// async function pred(brain, inputs) {
-//   console.log('pred');
-//   return await brain.model.predict(inputs).array; //await?
-// }
-/*
-//from example
-
-//config model
-const model = tf.sequential();
-
-//config each layer
-const configHidden = {
-  inputShape: [5],
-  units: 4,
-  activation: 'sigmoid'
-}
-const hidden = tf.layers.dense(configHidden);
-
-const configOutput = {
-  units: 2,
-  activation: 'sigmoid'
-}
-const output = tf.layers.dense(configOutput);
-
-//add layers to the model
-model.add(hidden);
-model.add(output);
-
-console.log(hidden);
-// hidden.print();
-console.log(output);
-
-const sgdOpt = tf.train.sgd(0.1);
-const config = {
-  optimizer: sgdOpt,
-  loss: 'meanSquaredError'
-}
-model.compile(config);
-
-console.log(model);
-tf.print(model);
-//don't need predict for NeurEvo
-let outputs = model.predict(tf.tensor2d([
-  [0.25, 0.92, 0.3, 0.23, 0.11]
-]));
-console.log(outputs);
-
-//tensors tracked
-console.log(tf.memory());
-
-//which  backend -- webGL
-// console.log(tf.getBackend());
-*/

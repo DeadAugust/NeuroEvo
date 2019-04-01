@@ -8,7 +8,7 @@
 // Switched over to tf.js by August Luhrs
 
 // How big is the population
-let totalPopulation = 200; //for debug
+let totalPopulation = 500; //for debug
 // All active birds (not yet collided with pipe)
 let activeBirds = [];
 // All birds for any given population
@@ -76,7 +76,6 @@ function toggleState() {
 
 function draw() {
   background(0);
-  console.log('draw ' + tf.memory().numTensors);
   // Should we speed up cycles per frame
   let cycles = speedSlider.value();
   speedSpan.html(cycles);
@@ -87,7 +86,6 @@ function draw() {
 
   // How many times to advance the game
   for (let n = 0; n < cycles; n++) {
-    console.log('n cycles ' + tf.memory().numTensors);
 
     // Show all the pipes
     for (let i = pipes.length - 1; i >= 0; i--) {
@@ -117,11 +115,8 @@ function draw() {
         let bird = activeBirds[i];
         // Bird uses its brain!
         //output array determines whether to jump or not
-        console.log('before think ' + tf.memory().numTensors);
         bird.think(pipes);
-        console.log('in between ' + tf.memory().numTensors);
         bird.update();
-        console.log('after update ' + tf.memory().numTensors);
 
 
         // Check all the pipes

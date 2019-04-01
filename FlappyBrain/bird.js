@@ -25,7 +25,7 @@ function mutation() { //changed to mutation for clarity
   if (random(1) < 0.1) {
     let offset = randomGaussian() * 0.5;
     mutationScalar += offset;
-    console.log(mutationScalar + 'offset');
+    // console.log(mutationScalar + 'offset');
   }
   return mutationScalar;
 }
@@ -46,7 +46,7 @@ class Bird {
     // The Neural Network is the bird's "brain"
     if (brain instanceof NeuralNetwork) {
       this.brain = brain.copy();
-      this.brain.mutate(mutation());
+      this.brain.mutate(mutation()); //why is it just "mutate" in the original??????
     } else {
       this.brain = new NeuralNetwork(5, 8, 2, 'sigmoid', 'meanSquaredError', 'sgd'); //update later with other act_func options
     }
@@ -98,30 +98,15 @@ class Bird {
       inputs[4] = map(this.velocity, -5, 5, 0, 1);
 
       // Get the outputs from the network (an array of 2)
-      console.log('before await predict ' + tf.memory().numTensors);
       let action = await this.brain.predict(inputs);
-      // tf.tidy(() => {
-
-      console.log('before action up ' + tf.memory().numTensors);
-
-      if (action[1] > action[0]) { //WHAT, that's crazy
+      if (action[1] > action[0]) {
         this.up();
       }
-      console.log('before dispose ' + tf.memory().numTensors);
-      console.log('action' + action);
-      // tf.dispose(action);
-      console.log('after dispose ' + tf.memory().numTensors);
-
-      // });
-      console.log('after predict tidy ' + tf.memory().numTensors);
-
-
     }
   }
 
   // Jump up
   up() {
-    // console.log('jump!');
     this.velocity += this.lift;
   }
 
