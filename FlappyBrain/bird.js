@@ -5,9 +5,12 @@
 // This flappy bird implementation is adapted from:
 // https://youtu.be/cXgA1d_E-jY&
 
+
+
 // Mutation function to be passed into bird.brain
 //effects the two weight matrices, and the two bias matrices
-/*
+
+/* old mutate function
 function mutate(x) {
   if (random(1) < 0.1) {
     let offset = randomGaussian() * 0.5;
@@ -19,7 +22,7 @@ function mutate(x) {
 }
 */
 
-//now just passes the scalar value to add
+//now just passes the "scalar" value to add
 function mutation() { //changed to mutation for clarity
   let mutationScalar = 0;
   // if (random(1) < 0.1) {

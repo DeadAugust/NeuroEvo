@@ -87,6 +87,7 @@ class NeuralNetwork {
         //mutate by adding scalar to each tensor
         // const mutationTensor = tf.scalar(mutationScalar); //needs to be number
         //have to do weird 1d tensor because can't make tf.scalar with a variable ***
+
         //mutate ih_weights and h_bias
         let hidden_array = [];
         for (let i = 0; i < this.hidden_nodes; i++) {

@@ -5,7 +5,7 @@
 // This flappy bird implementation is adapted from:
 // https://youtu.be/cXgA1d_E-jY&
 
-// Switched over to tf.js by August Luhrs
+// Attempt to switch over to tf.js by August Luhrs
 
 // How big is the population
 let totalPopulation = 500; //low for debug
