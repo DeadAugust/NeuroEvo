@@ -93,6 +93,13 @@ function setup(){
 
 function checkAgents(){
   console.log(agents);
+  // testing copy
+  // const modelCopy = agents[0].createModel();
+  // const weights = agents[0].model.getWeights();
+  // modelCopy.setWeights(weights);
+  // console.log(weights);
+  // console.log(modelCopy);
+
   // console.log(ml5);
 }
 function makeModel(){
