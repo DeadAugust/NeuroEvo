@@ -29,7 +29,7 @@ function setup(){
     //init population of agents
     for (let i = 0; i < testParameters.populationSize; i++){
       let newAgentNN = ml5.neuralNetwork(nnOptions); //no callback because no .init url?
-      newAgentNN.model = newAgentNN.createModel(); //since not called in training
+      // newAgentNN.model = newAgentNN.createModel(); //since not called in training
       let newAgent = new Agent(newAgentNN);
       agents.push(newAgent);
     }

@@ -28,7 +28,7 @@ class Agent {
             north = flEnv.map[spot.y-1][spot.x];
         }
         if (north == "H" || north == "OFF") { //if hole
-            northVal = -1;
+            northVal = 0;
         } else {
             northVal = ((flEnv.pos.x + 1) * (flEnv.pos.y)) / (flEnv.size * flEnv.size);
             //hopefully is normalizing where 1 is goal and 0 is start
@@ -40,7 +40,7 @@ class Agent {
             east = flEnv.map[spot.y][spot.x + 1];
         }
         if (east == "H" || east == "OFF") { //if hole
-            eastVal = -1;
+            eastVal = 0;
         } else {
             eastVal = ((flEnv.pos.x + 2) * (flEnv.pos.y +1)) / (flEnv.size * flEnv.size);
         }
@@ -51,7 +51,7 @@ class Agent {
             south = flEnv.map[spot.y+1][spot.x];
         }
         if (south == "H" || south == "OFF") { //if hole
-            southVal = -1;
+            southVal = 0;
         } else {
             southVal = ((flEnv.pos.x + 1) * (flEnv.pos.y+2)) / (flEnv.size * flEnv.size);
         }
@@ -62,7 +62,7 @@ class Agent {
             west = flEnv.map[spot.y][spot.x-1];
         }
         if (west == "H" || west == "OFF") { //if hole
-            westVal = -1;
+            westVal = 0;
         } else {
             westVal = ((flEnv.pos.x) * (flEnv.pos.y+1)) / (flEnv.size * flEnv.size);
         }
@@ -76,8 +76,17 @@ class Agent {
 
         let dirInputs = [northVal, eastVal, southVal, westVal];
         //feed forward
-        this.nn.classify(dirInputs, gotAction);
+        for (let i = 0; i < 100; i++){ //testing
+            let rand1 = random(1);
+            let rand2 = random(1);
+            this.nn.addData({n: 0, e: rand1, s: rand2, w: 0}, {up: 0, right: .3, down: .7, left: 0})
+        }
+        this.nn.normalizeData();
+        this.nn.train({ epochs: 20 }, finishedTraining(this));
+    
+        // this.nn.classify(dirInputs, gotAction);
         
+
 
         //get action
         //take action
@@ -86,6 +95,14 @@ class Agent {
         //check if end
 
     }
+    
+}
+
+ //finished training call back
+ function finishedTraining(agent) {
+    console.log('finished training: ');
+    console.log(agent.nn);
+    // this.nn.classify(dirInputs, gotAction);
 }
 
 function gotAction(error, results) {
