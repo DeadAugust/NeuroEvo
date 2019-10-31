@@ -1,12 +1,13 @@
 // JS Implementation of https://gym.openai.com/envs/FrozenLake-v0/
 class FrozenLake {
-  constructor(size, qAgent) {
+  // constructor(size, qAgent) {
+  constructor(size) {
     this.size = size;
     this.map = [];
-
-    this.qAgent = qAgent;
-    this.showTable = false;
+    // this.qAgent = qAgent;
+    // this.showTable = false;
     
+    //TODO: make sure all maps are possible to win
     for (let i = 0; i < size; i++){
       let row = [];
       for (let j = 0; j < size; j++){
@@ -48,7 +49,7 @@ class FrozenLake {
   step(action) {
     // Step the environment by one timestep. Returns observation, reward, done
 
-//so this is what I would need to call depending on the NN output (4 nodes, NSEW)
+    //so this is what I would need to call depending on the NN output (4 nodes, NSEW)
 
     // move the player
     if (action == 0) { // left
@@ -81,7 +82,9 @@ class FrozenLake {
 
   render() {
     // reset background
-    background(200, 100, 200);
+    // background(200, 100, 200);
+    background(0, 100, 100);
+
 
     let side = width > height ? height : width;
 

@@ -26,12 +26,35 @@ function setup(){
     createCanvas(800,800);
     background(0,100,100);
 
+    //init population of agents
     for (let i = 0; i < testParameters.populationSize; i++){
-      let newAgent = ml5.neuralNetwork(nnOptions); //no callback because no .init url?
-      newAgent.model = newAgent.createModel(); //since not called in training
+      let newAgentNN = ml5.neuralNetwork(nnOptions); //no callback because no .init url?
+      newAgentNN.model = newAgentNN.createModel(); //since not called in training
+      let newAgent = new Agent(newAgentNN);
       agents.push(newAgent);
     }
+    checkAgents();
 
+    //set up FL environment/map
+    resetEnv(4);
+
+    //training interface
+    let resetEnvButton = createButton('New Frozen Lake').mousePressed(() =>{ resetEnv(4)});
+    let startTrainingButton = createButton('Start Training').mousePressed(()=>{startTraining()});
+    let pauseTrainingButton = createButton('Pause Training').mousePressed(()=>{pauseTraining()});
+    let genCountSpan = createSpan('Generation: 0');
+    let genCount = 0;
+    let agentCountSpan = createSpan('Agent#: 0');
+    let agentCount = 0;
+    //TODO training parameters, highest reward agent
+
+    // let testButt = createButton('test').mousePressed(()=>{
+    //   agentCount++;
+    //   agentCountSpan.html('Agent#: ' + agentCount);
+    // });
+    // console.log(agentCountSpan.html());
+  
+  
     //NOTES
     //needs train on random data? 
     //might be easier to just generate random json data for train then to try and
@@ -63,7 +86,7 @@ function setup(){
     //END NOTES
 
 
-    checkAgents();
+    
     
     /* //aidan's
     // qAgent = new QAgent(4);
@@ -89,7 +112,27 @@ function setup(){
   
   //wow, no draw, nice
 
+function resetEnv(size){
+  flEnv = new FrozenLake(size);
+  flEnv.render();
+  console.log(flEnv);
+}
 
+function startTraining(){
+  //needs to init agents -- in this version, already done in setup
+  //then take one at a time, step through the env, count rewards for each
+  //then repopulate and go again
+  //so lets start with just getting one agent to step through
+
+  //for
+  // flEnv.reset();
+  flEnv.render();
+  agents[0].takeStep(flEnv);
+}
+
+function pauseTraining(){
+
+}
 
 function checkAgents(){
   console.log(agents);
